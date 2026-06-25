@@ -62,11 +62,58 @@ DriftEvent ──IMPACTS──► Service
 
 ## Getting Started
 
+### Prerequisites
+
+- Go 1.25+
+- Kubernetes cluster (optional — dev mode works without one)
+- Kind (optional — for local K8s dev)
+
+### Clone & Build
+
 ```bash
 git clone https://github.com/masoudei/driftlens.git
 cd driftlens
 go build ./cmd/driftlens
-./driftlens
+```
+
+## Usage
+
+### Dev mode (no cluster needed)
+
+```bash
+DRIFTLENS_DEV=true go run ./cmd/driftlens
+```
+
+Emits mock K8s events every 3 seconds. The correlator builds graph nodes in real time. Useful for testing and development without a cluster.
+
+### With a real Kubernetes cluster
+
+```bash
+go run ./cmd/driftlens
+```
+
+Auto-detects in-cluster config when running inside a pod. Falls back to `KUBECONFIG` env var or `~/.kube/config`. Watches `Deployment`, `StatefulSet`, `DaemonSet`, `ConfigMap`, and `Secret` changes in the target namespace.
+
+```bash
+# watch a specific namespace
+DRIFTLENS_NAMESPACE=production go run ./cmd/driftlens
+```
+
+### With Kind (local K8s cluster)
+
+```bash
+make dev-kind-cluster     # create the cluster
+make dev-kind             # build and run inside it
+```
+
+### Makefile targets
+
+```bash
+make dev              # dev mode (mock collector)
+make test             # run all tests
+make test-cover       # tests + coverage report
+make build            # compile binary
+make clean            # remove build artifacts
 ```
 
 ## Tech Stack
