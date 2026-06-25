@@ -352,6 +352,7 @@ Scopes (examples): `graph`, `api`, `ui`, `collector`, `engine`, `cli`, `docs`
 
 Rules:
 
+- **Atomic commits**: each commit is one logical change. Do not mix unrelated changes (e.g. a bug fix + a refactor + a docs update) in a single commit. Split into separate commits.
 - Subject is lowercase, imperative, no period.
 - Maximum 72 characters for subject.
 - Body explains *what* and *why*, not *how*.
