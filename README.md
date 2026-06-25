@@ -103,7 +103,7 @@ DRIFTLENS_NAMESPACE=production go run ./cmd/driftlens
 
 ```bash
 make dev-kind-cluster     # create the cluster
-make dev-kind             # build and run inside it
+make dev-kind             # build and connect to the cluster
 ```
 
 ### Makefile targets

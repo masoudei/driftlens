@@ -418,14 +418,15 @@ the agent must perform the following review loop before committing:
 1. Review changed files with `git status` and `git diff`
 2. Review AGENTS.md
 3. Review docs folder
-4. Determine whether:
+4. Review README.md — does the feature change the architecture, graph model, tech stack, or getting started flow?
+5. Determine whether:
 
    * architecture changed
    * roadmap changed
    * implementation changed
    * design principles changed
-5. Update documentation if required
-6. Update AGENTS.md if a new rule emerged
+6. Update documentation if required — including README.md if the change affects users, architecture, or setup
+7. Update AGENTS.md if a new rule emerged
 7. **Run tests** — write required tests for any new feature or change, then run the full test suite and confirm all tests pass:
 
    `go test ./...`

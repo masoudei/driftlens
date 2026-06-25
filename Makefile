@@ -1,20 +1,19 @@
-.PHONY: dev dev-kind test build clean
+.PHONY: dev dev-kind dev-kind-cluster dev-kind-cluster-delete test test-cover build clean
 
 # Run locally with mock collector (no cluster needed)
 dev:
 	DRIFTLENS_DEV=true go run ./cmd/driftlens
 
-# Create kind cluster
+# Create kind cluster (context auto-added to ~/.kube/config)
 dev-kind-cluster:
-	kind create cluster --config deploy/kind/kind-config.yaml --name driftlens
+	kind create cluster --config kind-config.yaml --name driftlens
 
 # Delete kind cluster
 dev-kind-cluster-delete:
 	kind delete cluster --name driftlens
 
-# Build and run inside kind (uses in-cluster config)
+# Build and run, connecting to kind cluster via default kubeconfig context
 dev-kind: build
-	kubectl apply -f deploy/kind/
 	./driftlens
 
 # Run all tests
