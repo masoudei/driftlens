@@ -58,39 +58,41 @@ export function RecentDrifts() {
             <p className="text-sm">No drifts detected yet</p>
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Resource</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Drift</TableHead>
-                <TableHead>Severity</TableHead>
-                <TableHead>Detected</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {recent.map((d) => (
-                <TableRow key={d.id}>
-                  <TableCell className="font-medium">{d.properties.resource}</TableCell>
-                  <TableCell>{d.properties.name}</TableCell>
-                  <TableCell className="max-w-[200px] truncate font-mono text-xs">
-                    {d.properties.drift}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="secondary"
-                      className={severityColor[d.properties.severity] || ""}
-                    >
-                      {d.properties.severity}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground text-xs">
-                    {new Date(d.properties.detected).toLocaleString()}
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Resource</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Drift</TableHead>
+                  <TableHead>Severity</TableHead>
+                  <TableHead>Detected</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {recent.map((d) => (
+                  <TableRow key={d.id}>
+                    <TableCell className="font-medium">{d.properties.resource}</TableCell>
+                    <TableCell>{d.properties.name}</TableCell>
+                    <TableCell className="max-w-[200px] truncate font-mono text-xs">
+                      {d.properties.drift}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="secondary"
+                        className={severityColor[d.properties.severity] || ""}
+                      >
+                        {d.properties.severity}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground text-xs">
+                      {new Date(d.properties.detected).toLocaleString()}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         )}
       </CardContent>
     </Card>

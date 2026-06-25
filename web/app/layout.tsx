@@ -2,7 +2,9 @@ import type { Metadata } from "next"
 import { Inter, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { SidebarProvider } from "@/components/sidebar-context"
 import { AppSidebar } from "@/components/app-sidebar"
+import { MainContent } from "@/components/main-content"
 import { Header } from "@/components/header"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
@@ -34,13 +36,15 @@ export default function RootLayout({
     >
       <body className="min-h-screen bg-background font-sans antialiased">
         <ThemeProvider>
-          <TooltipProvider>
-            <AppSidebar />
-            <div className="pl-[240px] transition-all duration-300">
-              <Header />
-              <main className="p-6">{children}</main>
-            </div>
-          </TooltipProvider>
+          <SidebarProvider>
+            <TooltipProvider>
+              <AppSidebar />
+              <MainContent>
+                <Header />
+                <main className="p-4 md:p-6">{children}</main>
+              </MainContent>
+            </TooltipProvider>
+          </SidebarProvider>
         </ThemeProvider>
       </body>
     </html>

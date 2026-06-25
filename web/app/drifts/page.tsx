@@ -78,12 +78,12 @@ export default function DriftsPage() {
       <Card>
         <CardHeader className="pb-3">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search drifts..."
-                  className="w-[250px] pl-9 h-9"
+                  className="w-[200px] sm:w-[250px] pl-9 h-9"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -118,58 +118,60 @@ export default function DriftsPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Resource</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Namespace</TableHead>
-                <TableHead>Drift</TableHead>
-                <TableHead>Severity</TableHead>
-                <TableHead>Detected</TableHead>
-                <TableHead></TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.length === 0 ? (
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
-                    No drifts found
-                  </TableCell>
+                  <TableHead>Resource</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Namespace</TableHead>
+                  <TableHead>Drift</TableHead>
+                  <TableHead>Severity</TableHead>
+                  <TableHead>Detected</TableHead>
+                  <TableHead></TableHead>
                 </TableRow>
-              ) : (
-                filtered.map((d) => (
-                  <TableRow key={d.id}>
-                    <TableCell className="font-medium">{d.properties.resource}</TableCell>
-                    <TableCell>{d.properties.name}</TableCell>
-                    <TableCell className="text-muted-foreground">{d.properties.namespace}</TableCell>
-                    <TableCell className="max-w-[200px] truncate font-mono text-xs">
-                      {d.properties.drift}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant="secondary"
-                        className={severityColor[d.properties.severity] || ""}
-                      >
-                        {d.properties.severity}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
-                      {new Date(d.properties.detected).toLocaleString()}
-                    </TableCell>
-                    <TableCell>
-                      <Link
-                        href={`/drifts/${encodeURIComponent(d.id)}`}
-                        className={buttonVariants({ variant: "ghost", size: "sm" })}
-                      >
-                        View
-                      </Link>
+              </TableHeader>
+              <TableBody>
+                {filtered.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center text-muted-foreground py-8">
+                      No drifts found
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+                ) : (
+                  filtered.map((d) => (
+                    <TableRow key={d.id}>
+                      <TableCell className="font-medium">{d.properties.resource}</TableCell>
+                      <TableCell>{d.properties.name}</TableCell>
+                      <TableCell className="text-muted-foreground">{d.properties.namespace}</TableCell>
+                      <TableCell className="max-w-[200px] truncate font-mono text-xs">
+                        {d.properties.drift}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="secondary"
+                          className={severityColor[d.properties.severity] || ""}
+                        >
+                          {d.properties.severity}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-xs text-muted-foreground">
+                        {new Date(d.properties.detected).toLocaleString()}
+                      </TableCell>
+                      <TableCell>
+                        <Link
+                          href={`/drifts/${encodeURIComponent(d.id)}`}
+                          className={buttonVariants({ variant: "ghost", size: "sm" })}
+                        >
+                          View
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
