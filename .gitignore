@@ -4,7 +4,7 @@
 *.dll
 *.so
 *.dylib
-driftlens
+/driftlens
 cmd/driftlens/driftlens
 /tmp
 

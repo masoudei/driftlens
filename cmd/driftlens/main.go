@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -83,23 +84,25 @@ func runK8s(bus eventbus.Bus) {
 }
 
 func newClientset() (kubernetes.Interface, error) {
-	kubeconfig := os.Getenv("KUBECONFIG")
-	if kubeconfig != "" {
-		config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
-		if err != nil {
-			return nil, err
-		}
-		return kubernetes.NewForConfig(config)
-	}
-
 	config, err := rest.InClusterConfig()
 	if err == nil {
 		return kubernetes.NewForConfig(config)
 	}
 
-	config, err = clientcmd.BuildConfigFromFlags("", "")
+	config, err = clientcmd.BuildConfigFromFlags("", kubeconfigPath())
 	if err != nil {
 		return nil, err
 	}
 	return kubernetes.NewForConfig(config)
+}
+
+func kubeconfigPath() string {
+	if k := os.Getenv("KUBECONFIG"); k != "" {
+		return k
+	}
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return ""
+	}
+	return filepath.Join(home, ".kube", "config")
 }

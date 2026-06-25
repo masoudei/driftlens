@@ -405,6 +405,8 @@ When the user says "create PR" or "open PR":
 
 ## Commit And Push Workflow
 
+Do not commit or push automatically after each change. Wait for the user to explicitly say "commit" or "commit and push".
+
 When the user says:
 
 "commit"
@@ -427,18 +429,18 @@ the agent must perform the following review loop before committing:
    * design principles changed
 6. Update documentation if required — including README.md if the change affects users, architecture, or setup
 7. Update AGENTS.md if a new rule emerged
-7. **Run tests** — write required tests for any new feature or change, then run the full test suite and confirm all tests pass:
+8. **Run tests** — write required tests for any new feature or change, then run the full test suite and confirm all tests pass:
 
    `go test ./...`
 
-8. **Build and run locally** — verify the application compiles cleanly and, where applicable, runs without error:
+9. **Build and run locally** — verify the application compiles cleanly and, where applicable, runs without error:
 
    `go build ./...`
 
-9. Stage only intended files — never stage secrets, binaries, or generated files
-10. Write commit message following the convention above
-11. Commit
-12. Push if requested
+10. Stage only intended files — never stage secrets, binaries, or generated files
+11. Write commit message following the convention above
+12. Commit
+13. Push if requested
 
 Never commit stale documentation intentionally.
 
