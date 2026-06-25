@@ -78,40 +78,20 @@ go build ./cmd/driftlens
 
 ## Usage
 
-### Dev mode (no cluster needed)
+### One command (PostgreSQL + app)
 
 ```bash
-DRIFTLENS_DEV=true go run ./cmd/driftlens
+make dev
 ```
 
-Emits mock K8s events every 3 seconds. The correlator builds graph nodes in real time. Useful for testing and development without a cluster.
+Auto-starts PostgreSQL via Docker Compose if not running, then launches DriftLens with mock collector + persistent storage. Idempotent — safe to run repeatedly.
 
-### With a real Kubernetes cluster
-
-```bash
-go run ./cmd/driftlens
-```
-
-Auto-detects in-cluster config when running inside a pod. Falls back to `KUBECONFIG` env var or `~/.kube/config`. Watches `Deployment`, `StatefulSet`, `DaemonSet`, `ConfigMap`, and `Secret` changes in the target namespace.
+### Other modes
 
 ```bash
-# watch a specific namespace
-DRIFTLENS_NAMESPACE=production go run ./cmd/driftlens
-```
-
-### With PostgreSQL (persistent storage)
-
-```bash
-make dev-db              # start PostgreSQL via Docker Compose
-make dev-db-run          # run DriftLens with PostgreSQL backend
-```
-
-The API server starts on `:8080`:
-
-```bash
-curl http://localhost:8080/health
-curl http://localhost:8080/drifts
-curl http://localhost:8080/timeline/Deployment
+make dev-db-only          # start PostgreSQL only
+make dev-kind             # run against Kind cluster (in-memory)
+make dev-kind-db          # run against Kind + PostgreSQL
 ```
 
 ### With Kind (local K8s cluster)
