@@ -11,9 +11,13 @@ import "time"
 type EventType string
 
 const (
-	EventResourceCreated EventType = "resource.created"
-	EventResourceUpdated EventType = "resource.updated"
-	EventResourceDeleted EventType = "resource.deleted"
+	EventResourceCreated  EventType = "resource.created"
+	EventResourceUpdated  EventType = "resource.updated"
+	EventResourceDeleted  EventType = "resource.deleted"
+	EventArgoSyncStarted  EventType = "argo.sync.started"
+	EventArgoSyncSucceeded EventType = "argo.sync.succeeded"
+	EventArgoSyncFailed   EventType = "argo.sync.failed"
+	EventArgoHealthChanged EventType = "argo.health.changed"
 )
 
 type Event struct {

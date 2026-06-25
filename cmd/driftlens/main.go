@@ -6,10 +6,12 @@ import (
 	"os"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"syscall"
 	"time"
 
 	"github.com/masoudei/driftlens/internal/api"
+	"github.com/masoudei/driftlens/internal/collector/argocd"
 	"github.com/masoudei/driftlens/internal/collector/k8s"
 	"github.com/masoudei/driftlens/internal/collector/mock"
 	"github.com/masoudei/driftlens/internal/correlator"
@@ -43,6 +45,8 @@ func main() {
 	} else {
 		runK8s(bus)
 	}
+
+	startArgoCD(bus)
 
 	srv := api.New(store)
 	go func() {
@@ -131,6 +135,27 @@ func runK8s(bus eventbus.Bus) {
 		log.Fatalf("k8s collector failed: %v", err)
 	}
 	log.Printf("Watching namespace %s", namespace)
+}
+
+func startArgoCD(bus eventbus.Bus) {
+	serverURL := os.Getenv("DRIFTLENS_ARGOCD_URL")
+	if serverURL == "" {
+		return
+	}
+
+	token := os.Getenv("DRIFTLENS_ARGOCD_TOKEN")
+	interval := 30 * time.Second
+	if v := os.Getenv("DRIFTLENS_ARGOCD_POLL_INTERVAL"); v != "" {
+		if d, err := strconv.Atoi(v); err == nil && d > 0 {
+			interval = time.Duration(d) * time.Second
+		}
+	}
+
+	log.Printf("ArgoCD collector: %s (poll %s)", serverURL, interval)
+	collector := argocd.New(serverURL, token, bus, interval)
+	if err := collector.Start(context.Background()); err != nil {
+		log.Fatalf("argocd collector failed: %v", err)
+	}
 }
 
 func newClientset() (kubernetes.Interface, error) {

@@ -33,3 +33,6 @@ vendor/
 # Environment
 .env
 .env.local
+
+# Session
+.session
