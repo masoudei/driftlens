@@ -58,6 +58,39 @@ web-build:
 build:
 	go build -o driftlens ./cmd/driftlens
 
+# ArgoCD
+.PHONY: dev-argocd-setup dev-argocd-clean dev-argocd-env dev-k8s
+
+dev-argocd-setup:
+	bash scripts/setup-argocd-kind.sh
+
+dev-argocd-clean:
+	-kubectl delete namespace argocd --ignore-not-found
+	-kubectl delete namespace sample-app --ignore-not-found
+	@echo ""
+	@echo "To rebuild cluster from scratch:"
+	@echo "  kind delete cluster --name driftlens"
+	@echo "  kind create cluster --config kind-config.yaml --name driftlens"
+
+dev-argocd-env:
+	@echo "Required env vars for DriftLens:"
+	@echo ""
+	@echo "  set DRIFTLENS_ARGOCD_URL=https://localhost:8443"
+	@echo "  set DRIFTLENS_ARGOCD_TOKEN= $$(argocd account generate-token)"
+	@echo "  set DRIFTLENS_ARGOCD_POLL_INTERVAL=30"
+	@echo ""
+	@echo "Then run: go run ./cmd/driftlens"
+
+# Run against Kind cluster with ArgoCD (no DB)
+dev-k8s: build
+	./driftlens
+
+# Run against Kind cluster with ArgoCD + PostgreSQL
+dev-k8s-db:
+	docker compose up -d postgres
+	go build -o driftlens ./cmd/driftlens
+	DRIFTLENS_DATABASE_URL=$(DB_URL) ./driftlens
+
 clean:
 	rm -f driftlens
 	rm -f coverage.out

@@ -2,6 +2,7 @@ package argocd
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -36,6 +37,7 @@ type Collector struct {
 	token     string
 	bus       eventbus.Bus
 	interval  time.Duration
+	client    *http.Client
 	prevState map[string]trackedApp
 	mu        sync.RWMutex
 	cancel    context.CancelFunc
@@ -48,6 +50,12 @@ func New(serverURL, token string, bus eventbus.Bus, interval time.Duration) *Col
 		token:     token,
 		bus:       bus,
 		interval:  interval,
+		client: &http.Client{
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+			},
+			Timeout: 10 * time.Second,
+		},
 		prevState: make(map[string]trackedApp),
 	}
 }
@@ -125,7 +133,7 @@ func (c *Collector) fetchApplications(ctx context.Context) ([]argocdAppItem, err
 	}
 	req.Header.Set("Accept", "application/json")
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := c.client.Do(req)
 	if err != nil {
 		return nil, fmt.Errorf("argocd api: %w", err)
 	}

@@ -155,6 +155,35 @@ kubectl delete secret demo-secret
 kubectl delete namespace demo-env
 ```
 
+### ArgoCD Integration
+
+```bash
+# 1. Ensure Kind cluster running with port 8443 mapped
+make dev-kind-cluster
+
+# 2. Install ArgoCD, create sample app, generate token
+bash scripts/setup-argocd-kind.sh
+
+# 3. Set env vars (printed by the script)
+set DRIFTLENS_ARGOCD_URL=https://localhost:8443
+set DRIFTLENS_ARGOCD_TOKEN=<token-from-script>
+
+# 4. Run DriftLens connected to Kind + ArgoCD
+make dev-kind
+```
+
+The script:
+- Installs ArgoCD v2.14.0 on the Kind cluster
+- Patches argocd-server to NodePort (30443 → localhost:8443)
+- Creates a sample Guestbook app synced from `argocd-example-apps`
+- Generates an API token for DriftLens
+- Prints the required env vars
+
+To clean up:
+```bash
+make dev-argocd-clean
+```
+
 ### Query Endpoints
 
 ```bash
