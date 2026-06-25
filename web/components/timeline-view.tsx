@@ -5,7 +5,7 @@ import { fetchTimeline } from "@/lib/api"
 import type { TimelineNode } from "@/lib/types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { AlertTriangle, GitCommit, Activity, Circle } from "lucide-react"
+import { AlertTriangle, Activity, Circle } from "lucide-react"
 
 interface TimelineViewProps {
   resource: string
@@ -29,7 +29,6 @@ export function TimelineView({ resource }: TimelineViewProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setLoading(true)
     fetchTimeline(resource)
       .then((data) => {
         setEvents(data.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()))
@@ -53,7 +52,7 @@ export function TimelineView({ resource }: TimelineViewProps) {
 
   const groups: Record<string, string> = {}
   events.forEach((e) => {
-    if (e.chain) {
+    if (typeof e.chain === "string") {
       const [chainId] = e.chain.split(":")
       groups[e.id] = chainId
     }

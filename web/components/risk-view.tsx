@@ -32,7 +32,6 @@ export function RiskView({ resource }: RiskViewProps) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    setLoading(true)
     Promise.all([
       fetchRisk(resource),
       fetchDrifts(),

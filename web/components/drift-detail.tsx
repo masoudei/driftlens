@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
-import { fetchDrift, fetchTimeline } from "@/lib/api"
-import type { DriftEvent, TimelineNode } from "@/lib/types"
+import { fetchDrift } from "@/lib/api"
+import type { DriftEvent } from "@/lib/types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, ExternalLink } from "lucide-react"
@@ -20,17 +20,12 @@ const severityColor: Record<string, string> = {
 export function DriftDetail() {
   const params = useParams()
   const [drift, setDrift] = useState<DriftEvent | null>(null)
-  const [timeline, setTimeline] = useState<TimelineNode[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const id = params.id as string
-    Promise.all([
-      fetchDrift(id),
-      fetchTimeline("Deployment"),
-    ]).then(([d, t]) => {
+    fetchDrift(id).then((d) => {
       setDrift(d)
-      setTimeline(t)
       setLoading(false)
     })
   }, [params.id])

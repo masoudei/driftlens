@@ -1,7 +1,7 @@
 "use client"
 
 import { ModeToggle } from "@/components/mode-toggle"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Download, Search, Menu } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import {
@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils"
 import { useSidebar } from "@/components/sidebar-context"
 
 export function Header() {
@@ -47,14 +48,17 @@ export function Header() {
       <ModeToggle />
 
       <DropdownMenu>
-        <DropdownMenuTrigger>
-          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
-            <Avatar className="h-8 w-8">
-              <AvatarFallback className="text-xs font-medium bg-primary text-primary-foreground">
-                TB
-              </AvatarFallback>
-            </Avatar>
-          </Button>
+        <DropdownMenuTrigger
+          className={cn(
+            buttonVariants({ variant: "ghost", size: "icon" }),
+            "h-9 w-9 rounded-full"
+          )}
+        >
+          <Avatar className="h-8 w-8">
+            <AvatarFallback className="text-xs font-medium bg-primary text-primary-foreground">
+              TB
+            </AvatarFallback>
+          </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
           <DropdownMenuLabel className="font-normal">

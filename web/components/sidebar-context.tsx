@@ -17,7 +17,11 @@ const SidebarContext = createContext<SidebarContextType>({
 })
 
 export function SidebarProvider({ children }: { children: ReactNode }) {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window === "undefined") return false
+    const w = window.innerWidth
+    return w >= 768 && w < 1024
+  })
   const [mobileOpen, setMobileOpen] = useState(false)
 
   const handleResize = useCallback(() => {
@@ -32,7 +36,6 @@ export function SidebarProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    handleResize()
     window.addEventListener("resize", handleResize)
     return () => window.removeEventListener("resize", handleResize)
   }, [handleResize])

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { fetchDrifts } from "@/lib/api"
 import type { DriftEvent } from "@/lib/types"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
   Select,
@@ -24,11 +23,9 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
-import { Search, ArrowUpDown } from "lucide-react"
+import { Search } from "lucide-react"
 import Link from "next/link"
 import { buttonVariants } from "@/components/ui/button"
 

@@ -9,7 +9,6 @@ import {
   Braces,
   PanelLeftClose,
   PanelLeft,
-  X,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"

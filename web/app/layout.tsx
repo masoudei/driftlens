@@ -35,6 +35,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-screen bg-background font-sans antialiased">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var e=localStorage.getItem("theme");var t=window.matchMedia("(prefers-color-scheme: dark)").matches;document.documentElement.classList.toggle("dark",e==="dark"||(!e&&t))}catch(e){}})()`,
+          }}
+        />
         <ThemeProvider>
           <SidebarProvider>
             <TooltipProvider>
