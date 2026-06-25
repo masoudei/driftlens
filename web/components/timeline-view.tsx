@@ -5,7 +5,7 @@ import { fetchTimeline } from "@/lib/api"
 import type { TimelineNode } from "@/lib/types"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { AlertTriangle, Activity, Circle } from "lucide-react"
+import { AlertTriangle, Activity, Circle, GitFork } from "lucide-react"
 
 interface TimelineViewProps {
   resource: string
@@ -21,6 +21,11 @@ const typeConfig: Record<string, { label: string; color: string; icon: React.Ele
     label: "Drift",
     color: "border-l-amber-500",
     icon: AlertTriangle,
+  },
+  ArgoSync: {
+    label: "ArgoCD Sync",
+    color: "border-l-purple-500",
+    icon: GitFork,
   },
 }
 

@@ -9,6 +9,7 @@ import {
   Braces,
   PanelLeftClose,
   PanelLeft,
+  GitFork,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -23,6 +24,7 @@ const navItems = [
   { title: "Drifts", href: "/drifts", icon: "AlertTriangle" },
   { title: "Timeline", href: "/timeline", icon: "Timeline" },
   { title: "Risk", href: "/risk", icon: "Shield" },
+  { title: "ArgoCD", href: "/argocd", icon: "GitFork" },
 ]
 
 const resourceTypes = [
@@ -40,6 +42,7 @@ const iconMap: Record<string, React.ElementType> = {
   Timeline,
   Shield,
   Braces,
+  GitFork,
 }
 
 function NavContent({ collapsed, onNavigate }: { collapsed: boolean; onNavigate?: () => void }) {

@@ -40,6 +40,7 @@ func (s *Server) registerRoutes() {
 	s.engine.GET("/drifts/:id", s.getDrift)
 	s.engine.GET("/timeline/:resource", s.timeline)
 	s.engine.GET("/risk/:resource", s.risk)
+	s.engine.GET("/argocd/applications", s.argoApplications)
 }
 
 func (s *Server) Run(addr string) error {
@@ -173,4 +174,75 @@ func (s *Server) risk(c *gin.Context) {
 		"drift_count":    driftCount,
 		"risk_severity":  severity,
 	})
+}
+
+func (s *Server) argoApplications(c *gin.Context) {
+	allNodes, err := s.store.ListNodes()
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	type appInfo struct {
+		app        string
+		latest     *graph.Node
+		driftCount int
+	}
+
+	apps := make(map[string]*appInfo)
+
+	for _, n := range allNodes {
+		if n.Type != graph.NodeArgoSync {
+			continue
+		}
+		appName := n.Properties["app"]
+		if appName == "" {
+			continue
+		}
+		info, exists := apps[appName]
+		if !exists {
+			info = &appInfo{app: appName}
+			apps[appName] = info
+		}
+		if info.latest == nil || n.Timestamp.After(info.latest.Timestamp) {
+			info.latest = n
+		}
+	}
+
+	for _, n := range allNodes {
+		if n.Type != graph.NodeDriftEvent {
+			continue
+		}
+		rels, _ := s.store.RelationshipsTo(n.ID)
+		for _, r := range rels {
+			srcNode, ok, _ := s.store.GetNode(r.SourceID)
+			if ok && srcNode.Type == graph.NodeArgoSync {
+				appName := srcNode.Properties["app"]
+				if info, exists := apps[appName]; exists {
+					info.driftCount++
+				}
+			}
+		}
+	}
+
+	var result []gin.H
+	for _, info := range apps {
+		latest := info.latest
+		if latest == nil {
+			continue
+		}
+		result = append(result, gin.H{
+			"app":          info.app,
+			"sync_status":  latest.Properties["sync_status"],
+			"health":       latest.Properties["health"],
+			"action":       latest.Properties["action"],
+			"last_seen":    latest.Timestamp,
+			"drift_count":  info.driftCount,
+		})
+	}
+
+	if result == nil {
+		result = []gin.H{}
+	}
+	c.JSON(200, gin.H{"applications": result})
 }

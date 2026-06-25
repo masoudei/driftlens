@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select"
 import { TimelineView } from "@/components/timeline-view"
 
-const resourceTypes = ["Deployment", "StatefulSet", "DaemonSet", "ConfigMap", "Secret", "Namespace"]
+const resourceTypes = ["Deployment", "StatefulSet", "DaemonSet", "ConfigMap", "Secret", "Namespace", "ArgoSync"]
 
 export default function TimelinePage() {
   const [resource, setResource] = useState("Deployment")

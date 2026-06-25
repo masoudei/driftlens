@@ -98,6 +98,10 @@ func (c *Collector) pollOnce(ctx context.Context) {
 	}
 	log.Printf("argocd poll: got %d apps", len(apps))
 
+	if len(apps) == 0 {
+		log.Print("No ArgoCD applications tracked yet")
+	}
+
 	c.mu.Lock()
 	defer c.mu.Unlock()
 
@@ -108,6 +112,7 @@ func (c *Collector) pollOnce(ctx context.Context) {
 		c.prevState[name] = curr
 		if !exists {
 			log.Printf("argocd: first seen app %s sync=%s health=%s", name, curr.Sync, curr.Health)
+			c.emitInitialEvent(name, curr)
 			continue
 		}
 		log.Printf("argocd: comparing %s: prev sync=%s health=%s  curr sync=%s health=%s", name, prev.Sync, prev.Health, curr.Sync, curr.Health)
@@ -153,6 +158,29 @@ func (c *Collector) fetchApplications(ctx context.Context) ([]argocdAppItem, err
 		return nil, fmt.Errorf("argocd decode: %w", err)
 	}
 	return result.Items, nil
+}
+
+func (c *Collector) emitInitialEvent(app string, curr trackedApp) {
+	var evType eventbus.EventType
+	switch curr.Sync {
+	case "Synced":
+		evType = eventbus.EventArgoSyncSucceeded
+	case "OutOfSync":
+		evType = eventbus.EventArgoSyncFailed
+	default:
+		evType = eventbus.EventArgoSyncStarted
+	}
+	c.bus.Publish(eventbus.Event{
+		Type:   evType,
+		Source: "argocd-collector",
+		Data: map[string]any{
+			"app":         app,
+			"prev_sync":   "",
+			"curr_sync":   curr.Sync,
+			"prev_health": "",
+			"curr_health": curr.Health,
+		},
+	})
 }
 
 func (c *Collector) detectChanges(prev, curr trackedApp) {

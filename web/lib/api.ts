@@ -1,4 +1,4 @@
-import type { DriftEvent, TimelineNode, RiskResponse } from "./types"
+import type { ArgoApp, DriftEvent, TimelineNode, RiskResponse } from "./types"
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "/api"
 
@@ -29,6 +29,11 @@ export async function fetchTimeline(resource: string): Promise<TimelineNode[]> {
     `${API_BASE}/timeline/${resource}`
   )
   return data.timeline
+}
+
+export async function fetchArgoApplications(): Promise<ArgoApp[]> {
+  const data = await fetchJSON<{ applications: ArgoApp[] }>(`${API_BASE}/argocd/applications`)
+  return data.applications
 }
 
 export async function fetchRisk(resource: string): Promise<RiskResponse | null> {

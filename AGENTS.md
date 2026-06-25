@@ -582,4 +582,28 @@ If the answer quality improves, the feature is valuable.
 
 If not, rethink the implementation.
 
+---
+
+# Learned Conventions
+
+## ArgoCD CLI and Login
+
+`argocd login` rejects URLs with `https://` prefix (fails with "too many colons in address"). Always strip the protocol when passing URLs to the argocd CLI:
+- Use `localhost:8443` for `argocd login`
+- Use `https://localhost:8443` for `DRIFTLENS_ARGOCD_URL` env var
+
+## Makefile Env Var Pattern
+
+To set env vars from a script and run a command in a single Make target, use:
+```makefile
+target:
+	@bash -c 'eval "$$(bash scripts/script.sh)" && go run ./cmd/app'
+```
+
+`$$` escapes Make's variable expansion to `$`, producing `$(...)` shell command substitution.
+
+## ArgoCD First-Seen Events
+
+The ArgoCD collector must emit an event (not just log) when an app is first discovered, so the correlator creates the `NodeArgoSync` node in the graph immediately. Otherwise the API returns empty until a sync status change triggers an event on the next poll.
+
 End of AGENTS.md

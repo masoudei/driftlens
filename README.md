@@ -162,22 +162,28 @@ kubectl delete namespace demo-env
 make dev-kind-cluster
 
 # 2. Install ArgoCD, create sample app, generate token
-bash scripts/setup-argocd-kind.sh
+make dev-argocd-setup
 
-# 3. Set env vars (printed by the script)
-set DRIFTLENS_ARGOCD_URL=https://localhost:8443
-set DRIFTLENS_ARGOCD_TOKEN=<token-from-script>
-
-# 4. Run DriftLens connected to Kind + ArgoCD
-make dev-kind
+# 3. Run DriftLens connected to Kind + ArgoCD (with PostgreSQL)
+#    ArgoCD env vars (URL, token) are auto-fetched from the Kind cluster.
+make dev-argocd-db
 ```
 
-The script:
+The setup script (`scripts/setup-argocd-kind.sh`):
 - Installs ArgoCD v2.14.0 on the Kind cluster
 - Patches argocd-server to NodePort (30443 → localhost:8443)
 - Creates a sample Guestbook app synced from `argocd-example-apps`
 - Generates an API token for DriftLens
-- Prints the required env vars
+
+At runtime, `make dev-argocd-db` calls `scripts/kind-argocd-env.sh` which
+auto-discovers the ArgoCD URL and admin password from the Kind cluster,
+logs into the ArgoCD API, and generates a fresh token — no manual env
+var setup needed.
+
+To run without PostgreSQL (in-memory store):
+```bash
+make dev-argocd
+```
 
 To clean up:
 ```bash

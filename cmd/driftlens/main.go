@@ -140,6 +140,7 @@ func runK8s(bus eventbus.Bus) {
 func startArgoCD(bus eventbus.Bus) {
 	serverURL := os.Getenv("DRIFTLENS_ARGOCD_URL")
 	if serverURL == "" {
+		log.Print("Start DriftLens with DRIFTLENS_ARGOCD_URL set to connect to ArgoCD")
 		return
 	}
 
