@@ -106,6 +106,21 @@ make dev-kind-cluster     # create the cluster
 make dev-kind             # build and connect to the cluster
 ```
 
+Kind automatically merges the cluster context into your default kubeconfig (`~/.kube/config`). No need to set `KUBECONFIG`.
+
+To verify the context was added:
+
+```bash
+kubectl cluster-info --context kind-driftlens
+```
+
+To get the raw kubeconfig (e.g. for CI or other tools):
+
+```bash
+kind get kubeconfig --name driftlens > driftlens-kubeconfig.yaml
+KUBECONFIG=driftlens-kubeconfig.yaml go run ./cmd/driftlens
+```
+
 ### Makefile targets
 
 ```bash
