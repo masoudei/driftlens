@@ -426,12 +426,24 @@ the agent must perform the following review loop before committing:
    * design principles changed
 5. Update documentation if required
 6. Update AGENTS.md if a new rule emerged
-7. Stage only intended files — never stage secrets, binaries, or generated files
-8. Write commit message following the convention above
-9. Commit
-10. Push if requested
+7. **Run tests** — write required tests for any new feature or change, then run the full test suite and confirm all tests pass:
+
+   `go test ./...`
+
+8. **Build and run locally** — verify the application compiles cleanly and, where applicable, runs without error:
+
+   `go build ./...`
+
+9. Stage only intended files — never stage secrets, binaries, or generated files
+10. Write commit message following the convention above
+11. Commit
+12. Push if requested
 
 Never commit stale documentation intentionally.
+
+Never commit failing tests.
+
+Never commit code that hasn't been built and verified locally.
 
 ## Push Rules
 
