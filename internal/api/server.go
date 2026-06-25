@@ -16,8 +16,22 @@ type Server struct {
 func New(store graph.Store) *Server {
 	s := &Server{store: store}
 	s.engine = gin.Default()
+	s.engine.Use(corsMiddleware())
 	s.registerRoutes()
 	return s
+}
+
+func corsMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+		c.Next()
+	}
 }
 
 func (s *Server) registerRoutes() {

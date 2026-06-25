@@ -128,6 +128,58 @@ make build            # compile binary
 make clean            # remove build artifacts
 ```
 
+### Dummy Resources
+
+Create sample resources and modify them to trigger drift events:
+
+```bash
+# Create resources
+kubectl create deployment demo-nginx --image=nginx --replicas=2
+kubectl create configmap demo-config --from-literal=color=blue --from-literal=env=staging
+kubectl create secret generic demo-secret --from-literal=password=secret123
+kubectl create namespace demo-env
+
+# Scale deployment (triggers replicas drift)
+kubectl scale deployment/demo-nginx --replicas=5
+
+# Update configmap (triggers data_keys drift)
+kubectl create configmap demo-config --from-literal=color=red --from-literal=env=prod --from-literal=region=us-east -o yaml --dry-run=client | kubectl apply -f -
+
+# Update secret (triggers secret_keys drift)
+kubectl create secret generic demo-secret --from-literal=password=newpass456 --from-literal=token=abc123 -o yaml --dry-run=client | kubectl apply -f -
+
+# Delete resources
+kubectl delete deployment demo-nginx
+kubectl delete configmap demo-config
+kubectl delete secret demo-secret
+kubectl delete namespace demo-env
+```
+
+### Query Endpoints
+
+```bash
+# All detected drifts
+curl localhost:8080/drifts
+
+# Single drift detail
+curl localhost:8080/drifts/drift-<id>
+
+# Event timeline for a resource type
+curl localhost:8080/timeline/Deployment
+curl localhost:8080/timeline/ConfigMap
+
+# Risk assessment for a resource type
+curl localhost:8080/risk/Deployment
+```
+
+### Frontend
+
+```bash
+make web     # start dev server at http://localhost:3000
+```
+
+The frontend proxies API calls through Next.js — no CORS needed. Requires the backend to be running on port 8080.
+
 ### Environment variables
 
 | Variable | Default | Description |

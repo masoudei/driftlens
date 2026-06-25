@@ -123,7 +123,7 @@ func runK8s(bus eventbus.Bus) {
 
 	namespace := os.Getenv("DRIFTLENS_NAMESPACE")
 	if namespace == "" {
-		namespace = "default"
+		log.Print("DRIFTLENS_NAMESPACE not set, watching all namespaces")
 	}
 
 	collector := k8s.New(clientset, bus, namespace)

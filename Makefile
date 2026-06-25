@@ -1,6 +1,6 @@
 DB_URL := postgres://driftlens:driftlens@localhost:5433/driftlens?sslmode=disable
 
-.PHONY: dev dev-db-only dev-db-stop dev-db-clean dev-db-reset dev-kind-cluster dev-kind-cluster-delete dev-kind dev-kind-db test test-cover build clean
+.PHONY: dev dev-db-only dev-db-stop dev-db-clean dev-db-reset dev-kind-cluster dev-kind-cluster-delete dev-kind dev-kind-db web web-build test test-cover build clean
 
 # One command: starts PostgreSQL if not running, runs app with mock collector + DB
 dev:
@@ -47,6 +47,13 @@ test:
 test-cover:
 	go test ./... -coverprofile=coverage.out -covermode=atomic
 	go tool cover -func=coverage.out
+
+# Frontend
+web:
+	cd web && npm install && npm run dev
+
+web-build:
+	cd web && npm run build
 
 build:
 	go build -o driftlens ./cmd/driftlens
