@@ -186,8 +186,11 @@ The frontend proxies API calls through Next.js — no CORS needed. Requires the 
 |---|---|---|
 | `DRIFTLENS_DEV` | `false` | Set to `true` to use mock collector (no K8s) |
 | `DRIFTLENS_DATABASE_URL` | — | PostgreSQL connection string (empty = in-memory store) |
-| `DRIFTLENS_NAMESPACE` | `default` | K8s namespace to watch |
+| `DRIFTLENS_NAMESPACE` | all | K8s namespace to watch (empty = all) |
 | `DRIFTLENS_ADDR` | `:8080` | API server address |
+| `DRIFTLENS_ARGOCD_URL` | — | ArgoCD server URL (optional, enables ArgoCD collector) |
+| `DRIFTLENS_ARGOCD_TOKEN` | — | ArgoCD auth token |
+| `DRIFTLENS_ARGOCD_POLL_INTERVAL` | `30` | ArgoCD poll interval in seconds |
 | `KUBECONFIG` | `~/.kube/config` | K8s config file path |
 
 ## Tech Stack
