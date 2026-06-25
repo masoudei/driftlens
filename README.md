@@ -188,17 +188,17 @@ make dev-argocd-clean
 
 ```bash
 # All detected drifts
-curl localhost:8080/drifts
+curl localhost:8081/drifts
 
 # Single drift detail
-curl localhost:8080/drifts/drift-<id>
+curl localhost:8081/drifts/drift-<id>
 
 # Event timeline for a resource type
-curl localhost:8080/timeline/Deployment
-curl localhost:8080/timeline/ConfigMap
+curl localhost:8081/timeline/Deployment
+curl localhost:8081/timeline/ArgoSync
 
 # Risk assessment for a resource type
-curl localhost:8080/risk/Deployment
+curl localhost:8081/risk/Deployment
 ```
 
 ### Frontend
@@ -207,7 +207,7 @@ curl localhost:8080/risk/Deployment
 make web     # start dev server at http://localhost:3000
 ```
 
-The frontend proxies API calls through Next.js — no CORS needed. Requires the backend to be running on port 8080.
+The frontend proxies API calls through Next.js — no CORS needed. Requires the backend to be running on port 8081.
 
 ### Environment variables
 
@@ -216,7 +216,7 @@ The frontend proxies API calls through Next.js — no CORS needed. Requires the 
 | `DRIFTLENS_DEV` | `false` | Set to `true` to use mock collector (no K8s) |
 | `DRIFTLENS_DATABASE_URL` | — | PostgreSQL connection string (empty = in-memory store) |
 | `DRIFTLENS_NAMESPACE` | all | K8s namespace to watch (empty = all) |
-| `DRIFTLENS_ADDR` | `:8080` | API server address |
+| `DRIFTLENS_ADDR` | `:8081` | API server address |
 | `DRIFTLENS_ARGOCD_URL` | — | ArgoCD server URL (optional, enables ArgoCD collector) |
 | `DRIFTLENS_ARGOCD_TOKEN` | — | ArgoCD auth token |
 | `DRIFTLENS_ARGOCD_POLL_INTERVAL` | `30` | ArgoCD poll interval in seconds |

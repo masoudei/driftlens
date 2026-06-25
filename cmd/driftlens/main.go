@@ -52,7 +52,7 @@ func main() {
 	go func() {
 		addr := os.Getenv("DRIFTLENS_ADDR")
 		if addr == "" {
-			addr = ":8080"
+			addr = ":8081"
 		}
 		log.Printf("API listening on %s", addr)
 		if err := srv.Run(addr); err != nil {

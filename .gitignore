@@ -36,3 +36,9 @@ vendor/
 
 # Session
 .session
+
+# Logs
+*.log
+
+# Generated/transient scripts
+scripts/*.json

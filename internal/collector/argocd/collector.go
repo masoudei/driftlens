@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -92,8 +93,10 @@ func (c *Collector) Stop() {
 func (c *Collector) pollOnce(ctx context.Context) {
 	apps, err := c.fetchApplications(ctx)
 	if err != nil {
+		log.Printf("argocd fetch error: %v", err)
 		return
 	}
+	log.Printf("argocd poll: got %d apps", len(apps))
 
 	c.mu.Lock()
 	defer c.mu.Unlock()
@@ -104,8 +107,10 @@ func (c *Collector) pollOnce(ctx context.Context) {
 		prev, exists := c.prevState[name]
 		c.prevState[name] = curr
 		if !exists {
+			log.Printf("argocd: first seen app %s sync=%s health=%s", name, curr.Sync, curr.Health)
 			continue
 		}
+		log.Printf("argocd: comparing %s: prev sync=%s health=%s  curr sync=%s health=%s", name, prev.Sync, prev.Health, curr.Sync, curr.Health)
 		c.detectChanges(prev, curr)
 	}
 }

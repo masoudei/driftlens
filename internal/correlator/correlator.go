@@ -56,6 +56,8 @@ func (c *Correlator) HandleArgoEvent(ev eventbus.Event) {
 
 	props := map[string]string{
 		"app":         app,
+		"resource":    "ArgoSync",
+		"name":        app,
 		"source":      ev.Source,
 		"sync_status": fmt.Sprintf("%v", ev.Data["curr_sync"]),
 		"health":      fmt.Sprintf("%v", ev.Data["curr_health"]),

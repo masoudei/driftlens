@@ -127,7 +127,7 @@ func (s *Server) timeline(c *gin.Context) {
 
 	var result []gin.H
 	for _, n := range allNodes {
-		if n.Properties["resource"] == resource || n.Properties["name"] == resource {
+		if n.Properties["resource"] == resource || n.Properties["name"] == resource || string(n.Type) == resource {
 			chain, _ := s.store.Traverse(n.ID, maxDepth)
 			result = append(result, gin.H{
 				"id":        n.ID,
