@@ -1,4 +1,4 @@
-DB_URL := postgres://driftlens:driftlens@localhost:5432/driftlens?sslmode=disable
+DB_URL := postgres://driftlens:driftlens@localhost:5433/driftlens?sslmode=disable
 
 .PHONY: dev dev-db-only dev-db-stop dev-db-clean dev-db-reset dev-kind-cluster dev-kind-cluster-delete dev-kind dev-kind-db test test-cover build clean
 
