@@ -1,9 +1,3 @@
-// Package correlator listens to the event bus and builds the causality graph.
-//
-// It subscribes to collector events and creates corresponding graph nodes
-// and relationships, forming the chain:
-//
-//	KubernetesEvent ──CAUSED──► DriftEvent
 package correlator
 
 import (
@@ -15,11 +9,11 @@ import (
 )
 
 type Correlator struct {
-	graph *graph.Graph
+	store graph.Store
 }
 
-func New(g *graph.Graph) *Correlator {
-	return &Correlator{graph: g}
+func New(store graph.Store) *Correlator {
+	return &Correlator{store: store}
 }
 
 func (c *Correlator) HandleEvent(ev eventbus.Event) {
@@ -44,25 +38,16 @@ func (c *Correlator) HandleEvent(ev eventbus.Event) {
 		props["action"] = "deleted"
 	}
 
-	existing, found := c.graph.GetNode(nodeID)
+	existing, found, _ := c.store.GetNode(nodeID)
 	if found {
 		existing.Timestamp = time.Now().UTC()
 		existing.Properties = props
+		c.store.AddNode(existing)
 		return
 	}
 
-	var nodeType graph.NodeType
-	switch resource {
-	case "Deployment", "StatefulSet", "DaemonSet":
-		nodeType = graph.NodeKubernetesEvent
-	case "ConfigMap", "Secret":
-		nodeType = graph.NodeKubernetesEvent
-	default:
-		nodeType = graph.NodeKubernetesEvent
-	}
-
-	node := graph.NewNode(nodeID, nodeType, props)
-	c.graph.AddNode(node)
+	node := graph.NewNode(nodeID, graph.NodeKubernetesEvent, props)
+	c.store.AddNode(node)
 }
 
 func (c *Correlator) SubscribeTo(bus eventbus.Bus) {

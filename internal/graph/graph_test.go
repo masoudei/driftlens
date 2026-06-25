@@ -8,11 +8,13 @@ import (
 
 func TestNewGraph(t *testing.T) {
 	g := graph.New()
-	if g.NodeCount() != 0 {
-		t.Fatalf("expected 0 nodes, got %d", g.NodeCount())
+	count, _ := g.NodeCount()
+	if count != 0 {
+		t.Fatalf("expected 0 nodes, got %d", count)
 	}
-	if g.RelationshipCount() != 0 {
-		t.Fatalf("expected 0 rels, got %d", g.RelationshipCount())
+	rc, _ := g.RelationshipCount()
+	if rc != 0 {
+		t.Fatalf("expected 0 rels, got %d", rc)
 	}
 }
 
@@ -21,7 +23,7 @@ func TestAddAndGetNode(t *testing.T) {
 	n := graph.NewNode("n1", graph.NodeCommit, map[string]string{"sha": "abc"})
 	g.AddNode(n)
 
-	got, ok := g.GetNode("n1")
+	got, ok, _ := g.GetNode("n1")
 	if !ok {
 		t.Fatal("expected to find n1")
 	}
@@ -38,10 +40,11 @@ func TestRemoveNodeCascadesRelationships(t *testing.T) {
 
 	g.RemoveNode("a")
 
-	if _, ok := g.GetNode("a"); ok {
+	if _, ok, _ := g.GetNode("a"); ok {
 		t.Fatal("expected node a to be removed")
 	}
-	if g.RelationshipCount() != 0 {
+	rc, _ := g.RelationshipCount()
+	if rc != 0 {
 		t.Fatal("expected relationships to cascade on node removal")
 	}
 }
@@ -57,7 +60,7 @@ func TestTraverse(t *testing.T) {
 	g.AddRelationship(graph.NewRelationship("r2", "b", "c", graph.Triggered, nil))
 	g.AddRelationship(graph.NewRelationship("r3", "c", "d", graph.Deployed, nil))
 
-	path := g.Traverse("a", 10)
+	path, _ := g.Traverse("a", 10)
 	if len(path) != 4 {
 		t.Fatalf("expected 4 nodes in path, got %d: %v", len(path), path)
 	}
@@ -75,12 +78,12 @@ func TestRelationshipsFromTo(t *testing.T) {
 	g.AddRelationship(graph.NewRelationship("r1", "a", "b", graph.Caused, nil))
 	g.AddRelationship(graph.NewRelationship("r2", "a", "c", graph.Caused, nil))
 
-	from := g.RelationshipsFrom("a")
+	from, _ := g.RelationshipsFrom("a")
 	if len(from) != 2 {
 		t.Fatalf("expected 2 rels from a, got %d", len(from))
 	}
 
-	to := g.RelationshipsTo("c")
+	to, _ := g.RelationshipsTo("c")
 	if len(to) != 1 {
 		t.Fatalf("expected 1 rel to c, got %d", len(to))
 	}

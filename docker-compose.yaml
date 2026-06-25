@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: driftlens
+      POSTGRES_USER: driftlens
+      POSTGRES_PASSWORD: driftlens
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U driftlens"]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  pgdata:

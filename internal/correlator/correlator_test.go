@@ -22,11 +22,12 @@ func TestCorrelatorCreatesNode(t *testing.T) {
 		},
 	})
 
-	if g.NodeCount() != 1 {
-		t.Fatalf("expected 1 node, got %d", g.NodeCount())
+	count, _ := g.NodeCount()
+	if count != 1 {
+		t.Fatalf("expected 1 node, got %d", count)
 	}
 
-	node, ok := g.GetNode("default/Deployment/payment-api")
+	node, ok, _ := g.GetNode("default/Deployment/payment-api")
 	if !ok {
 		t.Fatal("expected node to exist")
 	}
@@ -59,11 +60,12 @@ func TestCorrelatorUpdatesExistingNode(t *testing.T) {
 		},
 	})
 
-	if g.NodeCount() != 1 {
-		t.Fatalf("expected 1 node (updated), got %d", g.NodeCount())
+	count, _ := g.NodeCount()
+	if count != 1 {
+		t.Fatalf("expected 1 node (updated), got %d", count)
 	}
 
-	node, _ := g.GetNode("default/Deployment/payment-api")
+	node, _, _ := g.GetNode("default/Deployment/payment-api")
 	if node.Properties["action"] != "updated" {
 		t.Fatalf("expected action=updated, got %s", node.Properties["action"])
 	}
@@ -85,7 +87,8 @@ func TestCorrelatorSubscribesToBus(t *testing.T) {
 		},
 	})
 
-	if g.NodeCount() != 1 {
-		t.Fatalf("expected 1 node via subscription, got %d", g.NodeCount())
+	count, _ := g.NodeCount()
+	if count != 1 {
+		t.Fatalf("expected 1 node via subscription, got %d", count)
 	}
 }

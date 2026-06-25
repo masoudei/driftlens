@@ -99,6 +99,21 @@ Auto-detects in-cluster config when running inside a pod. Falls back to `KUBECON
 DRIFTLENS_NAMESPACE=production go run ./cmd/driftlens
 ```
 
+### With PostgreSQL (persistent storage)
+
+```bash
+make dev-db              # start PostgreSQL via Docker Compose
+make dev-db-run          # run DriftLens with PostgreSQL backend
+```
+
+The API server starts on `:8080`:
+
+```bash
+curl http://localhost:8080/health
+curl http://localhost:8080/drifts
+curl http://localhost:8080/timeline/Deployment
+```
+
 ### With Kind (local K8s cluster)
 
 ```bash
@@ -124,12 +139,24 @@ KUBECONFIG=driftlens-kubeconfig.yaml go run ./cmd/driftlens
 ### Makefile targets
 
 ```bash
-make dev              # dev mode (mock collector)
+make dev              # dev mode (mock collector, in-memory store)
+make dev-db           # start PostgreSQL
+make dev-db-run       # dev mode with PostgreSQL
 make test             # run all tests
 make test-cover       # tests + coverage report
 make build            # compile binary
 make clean            # remove build artifacts
 ```
+
+### Environment variables
+
+| Variable | Default | Description |
+|---|---|---|
+| `DRIFTLENS_DEV` | `false` | Set to `true` to use mock collector (no K8s) |
+| `DRIFTLENS_DATABASE_URL` | — | PostgreSQL connection string (empty = in-memory store) |
+| `DRIFTLENS_NAMESPACE` | `default` | K8s namespace to watch |
+| `DRIFTLENS_ADDR` | `:8080` | API server address |
+| `KUBECONFIG` | `~/.kube/config` | K8s config file path |
 
 ## Tech Stack
 
